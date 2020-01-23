@@ -81,6 +81,12 @@ class JenkinsExecutor extends Executor {
                 params: [{ name: jobName, number: job.lastBuild.number }]
             });
             return this._jenkinsJobWaitStop(jobName, 0);
+        } else {
+            await this.breaker.runCommand({
+                 module: 'queue',
+                 action: 'cancel',
+                 params: [{ number: job.queueItem.id }],
+            });
         }
     }
 
