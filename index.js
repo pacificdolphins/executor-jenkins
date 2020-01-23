@@ -70,7 +70,7 @@ class JenkinsExecutor extends Executor {
             params: [{ name: jobName }]
         });
 
-        if (!job || (!job.inQueue && !(job.lastBuild && job.lastBuild.number))) {
+        if (!job) {
             throw new Error('No build has been started yet, try later');
         }
         
