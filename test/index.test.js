@@ -403,7 +403,8 @@ describe('index', () => {
 
         it('return error when there is no build to be stopped yet', (done) => {
             const noBuildJobInfo = {
-                lastBuild: null
+                lastBuild: null,
+                inQueue: false
             };
 
             breakerMock.runCommand.withArgs(getOpts).resolves(noBuildJobInfo);
