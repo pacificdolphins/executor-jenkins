@@ -402,7 +402,11 @@ describe('index', () => {
         });
 
         it('return error when there is no build to be stopped yet', (done) => {
-            breakerMock.runCommand.withArgs(getOpts).resolves(null);
+            const noBuildJobInfo = {
+                lastBuild: null
+            };
+
+            breakerMock.runCommand.withArgs(getOpts).resolves(noBuildJobInfo);
             breakerMock.runCommand.withArgs(stopOpts).resolves(null);
 
             executor.stop({ buildId: config.buildId }).catch((err) => {

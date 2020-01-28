@@ -70,24 +70,17 @@ class JenkinsExecutor extends Executor {
             params: [{ name: jobName }]
         });
 
-        if (!job) {
-            throw new Error('No jobs in process yet, try later');
+        if (!(job && job.lastBuild && job.lastBuild.number)) {
+            throw new Error('No build has been started yet, try later');
         }
-        
-        if (job.inQueue && job.queueItem && job.queueItem.id ) {
-            await this.breaker.runCommand({
-                 module: 'queue',
-                 action: 'cancel',
-                 params: [{ number: job.queueItem.id }],
-            });
-        } else if (job.lastBuild && job.lastBuild.number) {
-            await this.breaker.runCommand({
-                module: 'build',
-                action: 'stop',
-                params: [{ name: jobName, number: job.lastBuild.number }]
-            });
-            await this._jenkinsJobWaitStop(jobName, 0);
-        }
+
+        await this.breaker.runCommand({
+            module: 'build',
+            action: 'stop',
+            params: [{ name: jobName, number: job.lastBuild.number }]
+        });
+
+        return this._jenkinsJobWaitStop(jobName, 0);
     }
 
     /**
